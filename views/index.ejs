@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Todo List</title>
+        <link rel="stylesheet" href="/css/style.css">
+        <link rel="icon" href="/assets/favicon.ico" sizes="18x18">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+            integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </head>
+    <body>
+        <div id="preloader"></div>
+
+        <nav class="navbar">
+            <i class="fa-solid fa-xmark" id="close"></i>
+            <h1 class="block-selection">More</h1>
+            <hr style="margin-bottom: 7px;" class="main-hr">
+            <div class="left-panel-tasks important-tasks">
+                <h2 class="block-selection">Important Tasks</h2>
+                <div class="left-panel-task-list">
+                    <p id="no-important-task" class="block-selection display-none">No Important Tasks?</p>
+                </div>
+
+            </div>
+
+            <hr style="margin-bottom: 4px" class="secondary-hr">
+            <div class="left-panel-tasks completed">
+                <h2 class="block-selection">Completed</h2>
+                <div class="left-panel-task-list">
+                    <p id="no-completed-task" class="block-selection display-none">Do something man...</p>
+                </div>
+            </div>
+
+            <hr style="margin-bottom: 4px;" class="secondary-hr">
+            <div class="review">
+                <span class="block-selection">Please Rate Us: <a href="https://www.youtube.com/watch?v=8ybW48rKBME"
+                        id="review-a">Click Here</a></span>
+            </div>
+        </nav>
+
+        <div class="vertical-separator">
+            <div class="resize-indicator"></div>
+        </div>
+
+        <div class="cover"></div>
+
+
+        <main class="container">
+            <h1 id="title" class="block-selection">
+                <i class="fa-solid fa-bars" id="menu"></i>
+                Todo List
+                <img src="/assets/light.png" class="theme-icon light">
+            </h1>
+            <hr class="main-hr">
+            <div class="todo">
+
+                <div class="content">
+                    <p class="nothing block-selection">Got nothing to do?</p>
+
+                    <div class="up-arrow">
+                        <div class="arrow-holder">
+                            <img src="/assets/arrow.png" alt="up">
+                        </div>
+                    </div>
+
+                    <!-- ? Task goes here -->
+
+
+                </div>
+                <div class="add-todo">
+                    <input type="text" id="add-input" placeholder="Something in your mind?&nbsp;&nbsp;"
+                        autocapitalize="word" autocomplete="off">
+                    <button type="button" id="add-button">Add</button>
+                </div>
+            </div>
+        </main>
+
+        <script src="/js/app.js" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js"></script>
+
+    </body>
+</html>
+
+
+
+<!-- <> Task template -->
+<!--
+<div class="task">
+    <div class="check-wrapper">
+        <img src="../todo-web/assets/check.png" class="tick">
+    </div>
+    <span class="task-text breaking-text">Text</span>
+    <i class="fa-regular fa-star star"></i>
+    <i class="fa-solid fa-trash delete-task"></i>
+</div>
+-->
+
+<!-- <> Completed Template -->
+<!-- 
+    <div class="left-panel-task">
+        <span class="left-panel-task-text">
+            Text
+        </span>
+        <i class="fa-solid fa-trash delete-task"></i>
+    </div>
+ -->
+
+<!-- <> Important Template -->
+<!-- 
+    <div class="left-panel-task">
+        <span class="left-panel-task-text">
+            Text
+        </span>
+        <i class="fa-solid fa-plus add-icon"></i>
+        <i class="fa-solid fa-trash delete-task"></i>
+    </div>
+  -->
