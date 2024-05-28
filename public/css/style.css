@@ -655,7 +655,7 @@ a:visited {
 
 .theme-icon {
 	position: absolute;
-	right: 15px;
+	right: 5rem;
 	top: 0.7rem;
 	width: 1.75rem;
 	opacity: 0.75;
@@ -677,4 +677,17 @@ a:visited {
 
 .vertical-separator:hover > .resize-indicator {
 	opacity: 0.8;
+}
+
+#logout {
+	position: absolute;
+	right: 1rem;
+	font-size: 1rem;
+	top: 1rem;
+	text-decoration: none;
+	color: var(--review-us-clr);
+}
+
+#logout:hover {
+	color: var(--text-clr);
 }

@@ -58,21 +58,53 @@ function remToPixels(rem) {
 	);
 }
 
+function updateInDb(task, where) {
+	fetch(`/todo/${data._id}`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ task, where }),
+	})
+		.then((result) => {
+			console.log("----------- update ", where, "-------", result);
+		})
+		.catch((err) => {
+			console.log("------------ Error update ", err);
+		});
+}
+
+function deleteInDb(task, where) {
+	fetch(`/todo/${data._id}`, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ task, where }),
+	})
+		.then((result) => {
+			console.log("----------- delete ", where, "-------", result);
+		})
+		.catch((err) => {
+			console.log("------------ Error delete ", err);
+		});
+}
+
 async function getActivity() {
 	let result = await fetch("/activity");
 	result = await result.text();
 	if (result) recActivity = result;
 }
 
-async function mainCheckForEmpty() {
-	if (todoList.length === 0 && !nothing.classList.contains("nothing-view")) {
+function mainCheckForEmpty() {
+	if (data.todo.length === 0 && !nothing.classList.contains("nothing-view")) {
 		content.style.flexDirection = "row";
 		content.style.justifyContent = "center";
 		nothing.innerHTML = "Got nothing to do?" + "</br>" + recActivity;
 		// console.log(nothing.innerHTML);
 		nothing.classList.add("nothing-view");
 	} else if (
-		todoList.length !== 0 &&
+		data.todo.length !== 0 &&
 		nothing.classList.contains("nothing-view")
 	) {
 		nothing.classList.remove("nothing-view");
@@ -102,7 +134,7 @@ function navBarClosing(time = 250) {
 
 function impCheckForEmpty() {
 	if (
-		importantList.length === 0 &&
+		data.important.length === 0 &&
 		!noImportantTask.classList.contains("display-unset")
 	) {
 		importantTasks.style.flexDirection = "row";
@@ -110,7 +142,7 @@ function impCheckForEmpty() {
 		// console.log(noImportantTask.innerHTML);
 		noImportantTask.classList.add("display-unset");
 	} else if (
-		importantList.length !== 0 &&
+		data.important.length !== 0 &&
 		noImportantTask.classList.contains("display-unset")
 	) {
 		noImportantTask.classList.remove("display-unset");
@@ -121,7 +153,7 @@ function impCheckForEmpty() {
 
 function comCheckForEmpty() {
 	if (
-		completedList.length === 0 &&
+		data.completed.length === 0 &&
 		!noCompletedTask.classList.contains("display-unset")
 	) {
 		completedTasks.style.flexDirection = "row";
@@ -129,7 +161,7 @@ function comCheckForEmpty() {
 		// console.log(noCompletedTask.innerHTML);
 		noCompletedTask.classList.add("display-unset");
 	} else if (
-		completedList.length !== 0 &&
+		data.completed.length !== 0 &&
 		noCompletedTask.classList.contains("display-unset")
 	) {
 		noCompletedTask.classList.remove("display-unset");
@@ -139,8 +171,8 @@ function comCheckForEmpty() {
 }
 
 function removeFromTodoList(word) {
-	let elementIndex = todoList.indexOf(word);
-	if (elementIndex != -1) todoList.splice(elementIndex, 1);
+	let elementIndex = data.todo.indexOf(word);
+	if (elementIndex != -1) data.todo.splice(elementIndex, 1);
 	// console.log(todoList);
 }
 
@@ -166,9 +198,13 @@ function checkArrow() {
 	}
 }
 
-function addTaskDom(input) {
+function addTaskDom(input, init = false) {
 	if (input != "") {
-		todoList.push(input);
+		if (!init) {
+			updateInDb(input, "todo");
+			data.todo.push(input);
+		}
+		// console.log(input);
 		let task = document.createElement("div");
 		task.classList.add("task");
 		let check = document.createElement("div");
@@ -199,7 +235,11 @@ function addTaskDom(input) {
 	}
 }
 
-function addCompletedDom(inputText) {
+function addCompletedDom(inputText, init = false) {
+	if (!init) {
+		updateInDb(inputText, "complete");
+		deleteInDb(inputText, "todo");
+	}
 	let task = document.createElement("div");
 	task.classList.add("left-panel-task");
 	let taskText = document.createElement("span");
@@ -215,9 +255,13 @@ function addCompletedDom(inputText) {
 	completedTasks.scrollTop = completedTasks.scrollHeight;
 }
 
-function addImportantDom(inputText) {
-	if (importantList.indexOf(inputText) === -1) {
-		importantList.push(inputText);
+function addImportantDom(inputText, init = false) {
+	console.log(inputText);
+	if (data.important.indexOf(inputText) === -1 || init) {
+		if (!init) {
+			updateInDb(inputText, "important");
+			data.important.push(inputText);
+		}
 		let task = document.createElement("div");
 		task.classList.add("left-panel-task");
 		let taskText = document.createElement("span");
@@ -287,18 +331,22 @@ async function main() {
 	await getActivity();
 	initResizerFn(verticalSeparator, navbar);
 
-	for (let task of tasks) {
-		todoList.push(task.querySelector(".task-text").innerText);
+	for (let task of data.todo) {
+		// todoList.push(task.querySelector(".task-text").innerText);
+		addTaskDom(task, true);
 	}
 	mainCheckForEmpty();
 
-	for (let element of allCompletedTasks) {
-		completedList.push(element.innerText);
+	for (let comTask of data.completed) {
+		// completedList.push(element.innerText);
+		addCompletedDom(comTask, true);
 	}
 	comCheckForEmpty();
 
-	for (let element of allImportantTasks) {
-		importantList.push(element.innerText);
+	for (let impTask of data.important) {
+		// data.important.push(element.innerText);
+		console.log(impTask);
+		addImportantDom(impTask, true);
 	}
 	impCheckForEmpty();
 }
@@ -335,9 +383,11 @@ content.addEventListener("click", (event) => {
 			completedSound.play();
 			setTimeout(() => {
 				isListening = true;
-				removeFromTodoList(event.target.parentElement.innerText);
-				completedList.push(event.target.parentElement.innerText);
-				addCompletedDom(event.target.parentElement.innerText);
+				let text = event.target.parentElement.innerText;
+				deleteInDb(text, "todo");
+				removeFromTodoList(text);
+				data.completed.push(text);
+				addCompletedDom(text);
 				event.target.parentElement.remove();
 				mainCheckForEmpty();
 				checkArrow();
@@ -355,7 +405,7 @@ content.addEventListener("click", (event) => {
 				removeFromTodoList(
 					event.target.parentElement.parentElement.innerText
 				);
-				completedList.push(
+				data.completed.push(
 					event.target.parentElement.parentElement.innerText
 				);
 				addCompletedDom(
@@ -375,7 +425,9 @@ content.addEventListener("click", (event) => {
 	deleteSound.pause();
 	deleteSound.currentTime = 0;
 	if (event.target.classList.contains("delete-task")) {
-		removeFromTodoList(event.target.parentElement.innerText);
+		let text = event.target.parentElement.innerText;
+		removeFromTodoList(text);
+		deleteInDb(text, "todo");
 		event.target.parentElement.remove();
 		deleteSound.play();
 		mainCheckForEmpty();
@@ -416,7 +468,7 @@ content.addEventListener("click", (event) => {
 			.classList.add("important-bold");
 		content.insertAdjacentElement("afterbegin", importantTask);
 		addImportantDom(importantTask.innerText);
-		// console.log(importantList);
+		// console.log(data.important);
 		impCheckForEmpty();
 	} else if (
 		event.target.classList.contains("star") &&
@@ -481,26 +533,25 @@ navClose.addEventListener("click", () => {
 // ? Important task delete
 importantTasks.addEventListener("click", (event) => {
 	if (event.target.classList.contains("delete-task")) {
+		const text = event.target.parentElement.innerText;
+		deleteInDb(text, "important");
+		data.important.splice(data.important.indexOf(text), 1);
 		event.target.parentElement.remove();
-		importantList.splice(
-			importantList.indexOf(event.target.parentElement.innerText),
-			1
-		);
 		impCheckForEmpty();
-		// console.log("importantList :>> ", importantList);
+		// console.log("data.important :>> ", data.important);
 	}
 });
 
 // ? completed task delete
 completedTasks.addEventListener("click", (event) => {
 	if (event.target.classList.contains("delete-task")) {
+		const text = event.target.parentElement.innerText;
+		console.log(data.completed.splice(data.completed.indexOf(text), 1));
+		deleteInDb(text, "complete");
+
 		event.target.parentElement.remove();
-		completedList.splice(
-			completedList.indexOf(event.target.parentElement.innerText),
-			1
-		);
 		comCheckForEmpty();
-		// console.log("completedList :>> ", completedList);
+		// console.log("data.completed :>> ", data.completed);
 	}
 });
 

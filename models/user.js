@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
 	todo: [{ type: String }],
 	completed: [{ type: String }],
 	important: [{ type: String }],
-});
+}, {versionKey: false});
 
 const TodoUser = mongoose.model("TodoUser", userSchema);
 module.exports = TodoUser;
