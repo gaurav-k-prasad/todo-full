@@ -101,22 +101,20 @@ app.get(
 app.post(
 	"/todo/:id",
 	asyncWrap(async (req, res) => {
+		const { id } = req.params;
 		if (req.body.where === "todo") {
-			const { id } = req.params;
 			const user = await TodoUser.findById(id);
 			user.todo.push(req.body.task.toString());
 			user.save();
 			res.status(200).send("success");
 			// console.log(user);
 		} else if (req.body.where === "complete") {
-			const { id } = req.params;
 			const user = await TodoUser.findById(id);
 			user.completed.push(req.body.task.toString());
 			user.save();
 			res.status(200).send("success");
 			// console.log(user);
 		} else if (req.body.where === "important") {
-			const { id } = req.params;
 			const user = await TodoUser.findById(id);
 			user.important.push(req.body.task.toString());
 			user.save();
