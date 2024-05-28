@@ -67,94 +67,120 @@ app.post("/u_same", async (req, res) => {
 			res.send(false);
 		}
 	} catch (error) {
-		res.send(true)
+		res.send(true);
 	}
 });
 
-app.post("/authenticate", asyncWrap(async (req, res, next) => {
-	const { username, password } = req.body;
-	const result = await TodoUser.findOne({
-		username: username,
-		password: password,
-	});
+app.post(
+	"/authenticate",
+	asyncWrap(async (req, res, next) => {
+		const { username, password } = req.body;
+		const result = await TodoUser.findOne({
+			username: username,
+			password: password,
+		});
 
-	if (result) {
-		res.redirect(`/todo/${result._id}`);
-	} else {
-		res.redirect("/login");
-	}
-}));
+		if (result) {
+			res.redirect(`/todo/${result._id}`);
+		} else {
+			res.redirect("/login");
+		}
+	})
+);
 
-app.get("/todo/:id", asyncWrap(async (req, res) => {
-	const { id } = req.params;
-	const data = await TodoUser.findById(id);
-	console.log(data);
-	res.render("index.ejs", { data });
-}));
+app.get(
+	"/todo/:id",
+	asyncWrap(async (req, res) => {
+		const { id } = req.params;
+		const data = await TodoUser.findById(id);
+		// console.log(data);
+		res.render("index.ejs", { data });
+	})
+);
 
-app.post("/todo/:id", asyncWrap(async (req, res) => {
-	if (req.body.where === "todo") {
-		const { id } = req.params;
-		const user = await TodoUser.findById(id);
-		user.todo.push(req.body.task.toString());
-		user.save();
-		res.status(200).send("success");
-		console.log(user);
-	} else if (req.body.where === "complete") {
-		const { id } = req.params;
-		const user = await TodoUser.findById(id);
-		user.completed.push(req.body.task.toString());
-		user.save();
-		res.status(200).send("success");
-		console.log(user);
-	} else if (req.body.where === "important") {
-		const { id } = req.params;
-		const user = await TodoUser.findById(id);
-		user.important.push(req.body.task.toString());
-		user.save();
-		res.status(200).send("success");
-		console.log(user);
-	}
-}));
+app.post(
+	"/todo/:id",
+	asyncWrap(async (req, res) => {
+		if (req.body.where === "todo") {
+			const { id } = req.params;
+			const user = await TodoUser.findById(id);
+			user.todo.push(req.body.task.toString());
+			user.save();
+			res.status(200).send("success");
+			// console.log(user);
+		} else if (req.body.where === "complete") {
+			const { id } = req.params;
+			const user = await TodoUser.findById(id);
+			user.completed.push(req.body.task.toString());
+			user.save();
+			res.status(200).send("success");
+			// console.log(user);
+		} else if (req.body.where === "important") {
+			const { id } = req.params;
+			const user = await TodoUser.findById(id);
+			user.important.push(req.body.task.toString());
+			user.save();
+			res.status(200).send("success");
+			// console.log(user);
+		}
+	})
+);
 
-app.delete("/todo/:id", asyncWrap(async (req, res) => {
-	if (req.body.where === "todo") {
-		const { id } = req.params;
-		const user = await TodoUser.findById(id);
-		user.todo.splice(user.todo.indexOf(req.body.task.toString()), 1);
-		user.save();
-		res.status(200).send("success");
-		console.log(user);
-	} else if (req.body.where === "complete") {
-		const { id } = req.params;
-		const user = await TodoUser.findById(id);
-		user.completed.splice(user.todo.indexOf(req.body.task.toString()), 1);
-		user.save();
-		res.status(200).send("success");
-		console.log(user);
-	} else if (req.body.where === "important") {
-		const { id } = req.params;
-		const user = await TodoUser.findById(id);
-		user.important.splice(user.todo.indexOf(req.body.task.toString()), 1);
-		user.save();
-		res.status(200).send("success");
-		console.log(user);
-	}
-}));
+app.delete(
+	"/todo/:id",
+	asyncWrap(async (req, res) => {
+		if (req.body.where === "todo") {
+			const { id } = req.params;
+			const user = await TodoUser.findById(id);
+			user.todo.splice(user.todo.indexOf(req.body.task.toString()), 1);
+			user.save();
+			res.status(200).send("success");
+			// console.log(user);
+		} else if (req.body.where === "complete") {
+			const { id } = req.params;
+			const user = await TodoUser.findById(id);
+			user.completed.splice(
+				user.completed.indexOf(req.body.task.toString()),
+				1
+			);
+			user.save();
+			res.status(200).send("success");
+			// console.log(user);
+		} else if (req.body.where === "important") {
+			const { id } = req.params;
+			const user = await TodoUser.findById(id);
+			console.log(user.todo);
+			console.log(req.body.task);
+			console.log(
+				user.important.splice(
+					user.important.indexOf(req.body.task.toString()),
+					1
+				)
+			);
 
-app.post("/register", asyncWrap(async (req, res) => {
-	const { username, password } = req.body;
-	const user1 = TodoUser({
-		username: username,
-		password: password,
-		todo: [],
-		completed: [],
-		important: [],
-	});
-	const result = await user1.save();
-	console.log(result);
-	res.redirect("/");
-}));
+			user.save();
+			res.status(200).send("success");
+			// console.log(user);
+		}
+	})
+);
+
+app.post(
+	"/register",
+	asyncWrap(async (req, res) => {
+		const { username, password } = req.body;
+		const user1 = TodoUser({
+			username: username,
+			password: password,
+			todo: [],
+			completed: [],
+			important: [],
+		});
+		const result = await user1.save();
+		console.log(result);
+		res.redirect("/");
+	})
+);
 
 app.use((err, req, res, next) => {
 	res.render("error.ejs", { err });

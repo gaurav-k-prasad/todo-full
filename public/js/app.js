@@ -75,6 +75,7 @@ function updateInDb(task, where) {
 }
 
 function deleteInDb(task, where) {
+	console.log(task);
 	fetch(`/todo/${data._id}`, {
 		method: "DELETE",
 		headers: {
@@ -256,7 +257,7 @@ function addCompletedDom(inputText, init = false) {
 }
 
 function addImportantDom(inputText, init = false) {
-	console.log(inputText);
+	// console.log(inputText);
 	if (data.important.indexOf(inputText) === -1 || init) {
 		if (!init) {
 			updateInDb(inputText, "important");
@@ -332,20 +333,17 @@ async function main() {
 	initResizerFn(verticalSeparator, navbar);
 
 	for (let task of data.todo) {
-		// todoList.push(task.querySelector(".task-text").innerText);
 		addTaskDom(task, true);
 	}
 	mainCheckForEmpty();
 
 	for (let comTask of data.completed) {
-		// completedList.push(element.innerText);
 		addCompletedDom(comTask, true);
 	}
 	comCheckForEmpty();
 
 	for (let impTask of data.important) {
-		// data.important.push(element.innerText);
-		console.log(impTask);
+		// console.log(impTask);
 		addImportantDom(impTask, true);
 	}
 	impCheckForEmpty();
@@ -546,7 +544,7 @@ importantTasks.addEventListener("click", (event) => {
 completedTasks.addEventListener("click", (event) => {
 	if (event.target.classList.contains("delete-task")) {
 		const text = event.target.parentElement.innerText;
-		console.log(data.completed.splice(data.completed.indexOf(text), 1));
+		data.completed.splice(data.completed.indexOf(text), 1);
 		deleteInDb(text, "complete");
 
 		event.target.parentElement.remove();
