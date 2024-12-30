@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const path = require("path");
 const TodoUser = require("./models/user.js");
 const app = express();
-const port = process.env.PORT || 6010;
+// const port = process.env.PORT || 6010;
+const port = 3000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "/public/")));
@@ -182,7 +183,6 @@ app.post(
 
 app.use((err, req, res, next) => {
 	res.render("error.ejs", { err });
-	next();
 });
 
 app.all("*", (req, res) => {
